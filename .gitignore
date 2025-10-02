@@ -7,10 +7,10 @@ __pycache__/
 *.so
 
 #files
-.pdf
-.csv
-.xlsx
-.png
+*.pdf
+*.csv
+*.xlsx
+*.png
 .DS_Store
 
 #Tex
