@@ -12,7 +12,32 @@
 
 \section{1週目 - 実験1}
 \subsection{課題1}
-以下に5つのデータの蛍光量と, その平均値と標準偏差を示す.
+　以下に5つのデータの蛍光量と, その平均値と標準偏差を示す.
+蛍光量は, 抵抗値を$R = 50 \Omega$, 増幅率を$A = 10^6 $, として, 得られた電圧から以下の式で求めた.
+
+\begin{equation}
+    \text{蛍光量} = \frac{1}{AR} \int_0^T |V(t)| dt
+\end{equation}
+
+ただし, $T$は時間である.
+
+%表
+\begin{table}[h]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表1-1: 蛍光量のデータ}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        データ名 & 蛍光量 \\ \hline
+        データ01 & $2.13 \times 10^{-17}$ \\ \hline
+        データ02 & $2.58 \times 10^{-17}$ \\ \hline
+        データ03 & $1.95 \times 10^{-17}$ \\ \hline
+        データ04 & $2.65 \times 10^{-17}$ \\ \hline
+        データ05 & $1.94 \times 10^{-17}$ \\ \hline
+        平均値 & $2.25 \times 10^{-17}$ \\ \hline
+        標準偏差 & $3.07 \times 10^{-18}$ \\ \hline
+    \end{tabular}
+\end{table}
 
 
 \section{1週目 - 実験2}
