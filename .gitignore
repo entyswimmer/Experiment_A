@@ -16,6 +16,8 @@ __pycache__/
 #Tex
 latex-output/
 
+#データセット
+DataSet/
 
 
 # Distribution / packaging
