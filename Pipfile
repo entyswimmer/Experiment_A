@@ -10,6 +10,7 @@ matplotlib = "*"
 japanize-matplotlib = "*"
 jupyter = "*"
 scipy = "*"
+openpyxl = "*"
 
 [dev-packages]
 
