@@ -146,7 +146,6 @@ $A = 11.3 m^{-1}Pa^{-1}, B = 274 V/(mPa)$とした.
     \centering
     \captionsetup{labelformat=empty}
     \caption{表2-1: プローブ電流-電圧特性データ}
-    \label{tab:IV_data}
     \begin{tabular}{|c|c|}
     \hline
     $V_p$ [V] & $I_p$ [mA] \\
@@ -253,7 +252,103 @@ $log I_e$と$V_p$をプロットしたグラフ以下に図2-2として示す.
 引き起こす可能性がある. つまり, 本実験における抵抗の役割は, 電子飽和電流を制限する保護抵抗として機能し, %
 回路の安全性を確保することである.
 
-\subsection{考察課題(6)}
+\subsection{考察課題(4)}
+　以下に核融合, ヘリコンプラズマ, マグネトロンプラズマ, 太陽コロナ, 星間雲プラズマの%
+電子密度と電子温度の領域を表3-1として示す.
 
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表3-1: 各種プラズマの電子密度と電子温度の代表的な領域}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        プラズマの種類 & 電子密度 $n_e [m^{-3}]$ & 電子温度 $T_e [eV]$ \\
+        \hline
+        核融合プラズマ & $10^{19} \sim 10^{21}$ & $10^3 \sim 3\times 10^4$  \\
+        ヘリコンプラズマ & $10^{16} \sim 10^{19}$ & $2 \sim 8$  \\
+        マグネトロンプラズマ & $10^{15} \sim 10^{17}$ & $1 \sim 5$ \\
+        太陽コロナ & $10^{11} \sim 10^{15}$ & $10^2 \sim 10^3$  \\
+        星間雲プラズマ & $10^{6} \sim  10^{9}$ & $10^{-2} \sim 10^0$  \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+また, 以下に図4-1として, 各種プラズマの電子密度と電子温度の代表的な領域と実験値の比較したものを%
+両対数グラフに領域を示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A5-2-4.png}
+    \caption{図4-1: 各種プラズマの電子密度と電子温度の代表的な領域と実験値の比較}
+\end{figure}
+
+\subsection{考察課題(6)}
+　電子の速度分布関数 $f_e(\mathbf{v})$ がマクスウェル速度分布であるとき, その物理量を求める.
+
+\begin{itemize}
+    \item $n_e$: 電子密度
+    \item $m_e$: 電子の質量
+    \item $k_B$: ボルツマン定数
+    \item $T_e$: 電子温度
+\end{itemize}
+
+\noindent
+とする. 速度分布関数は以下の式(9)で与えられる.
+
+\begin{equation}
+    f_e(\mathbf{v_e}) = n_e \left(\frac{m_e}{2\pi k_B T_e}\right)^{1/2} \exp\left(-\frac{m_e v_e^2}{2 k_B T_e}\right)
+\end{equation}
+
+\noindent
+　電子の平均速度 $\langle \mathbf{v_e} \rangle$は, 上の式(9)を全速度空間で積分することで求められる.%
+マクスウェル分布は速度空間 ($\mathbf{v_e}$) において原点対称であるため、特定の方向に進む電子と反対方向に%
+進む電子の数が等しく, 平均速度はゼロとなる. よって, 
+
+\begin{equation}
+    \langle \mathbf{v_e} \rangle = \frac{1}{n_e} \int_{-\infty}^{\infty} \mathbf{v} f_e(\mathbf{v}) d\mathbf{v} = 0
+\end{equation}
+
+\noindent
+　電子の平均エネルギー $E = \frac{1}{2} m_e v^2$ は, 速度分布関数を用いて以下の式(11)で定義される.
+
+\begin{equation}
+    \langle E \rangle = \frac{\int_{-\infty}^{\infty} \left(\frac{1}{2} m_e v^2\right) f_e(\mathbf{v}) d\mathbf{v}}{\int_{-\infty}^{\infty} f_e(\mathbf{v}) d\mathbf{v}} 
+\end{equation}
+
+\noindent
+ここで, $v_{th} = (2k_B T_e / m_e)^{1/2}$, $y = v / v_{th}$%
+とすると, 式(11)は以下の式(12)のように書ける.
+
+\begin{equation}
+    \langle E \rangle = \frac{\frac{1}{2}m_e v_{th}^2 \int_{-\infty}^{\infty} [exp(-y^2)]y^2 d\mathbf{v}}{\int_{-\infty}^{\infty} exp(-y^2) d\mathbf{v}} 
+\end{equation}
+
+\noindent
+この積分の結果は, 以下の式(13)により表される.
+
+\begin{equation}
+    \langle E \rangle = \frac{1}{2} k_B T_e
+\end{equation}
+
+\noindent
+　最大確率速度について, 速度の大きさの分布関数$F(v)$を求めるために,%
+まず, 速度分布関数$f_e (v)$を速度空間の球殻にわたって積分する.
+
+\begin{equation}
+    F(v) = 4\pi v^2 f_e(\mathbf{v}) = 4\pi n_e \left(\frac{m_e}{2\pi k_B T_e}\right)^{3/2} v^2 \exp\left(-\frac{m_e v^2}{2 k_B T_e}\right)
+\end{equation}
+
+\noindent
+ただし, $f_e (v)$は3次元のものを使用した. $F(v)$ が最大となる $v$ は、$\frac{dF(v)}{dv} = 0$ を解くことで得られる.
+以下の式(15)に結果を示す.
+
+\begin{equation}
+    v_{mp} = \sqrt{\frac{2 k_B T_e}{m_e}}
+\end{equation}
+
+\section{参考文献}
+プラズマ物理学入門 丸善出版
 
 \end{document}
