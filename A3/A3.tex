@@ -7,7 +7,742 @@
 \usepackage{float}
 \usepackage{url}
 \usepackage[dvipdfmx, x11names]{xcolor}
+\usepackage{csvsimple}
+\usepackage{adjustbox}
 
 \begin{document}
+
+\section{目的}
+　モーションコントロール技術の基礎を理解するため，直流サーボモータを用いたサーボ機構の原理を学び，
+フィードバック制御系としての構成を理解することを目的とする．
+
+\section{原理}
+
+\subsection{サーボモータのモデリング}
+　本実験で使用する他励式直流サーボモータの回路とブロック線図を以下に図2-1として示す.
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/moter_bode.png}
+    \caption{図2-1: 他励式直流サーボモータの回路とブロック線図}
+\end{figure}
+
+\noindent
+直流サーボモータの電機子回路は次式で表される：
+
+\begin{equation}
+V_m = e_b + i_m R_m + L_m \frac{di_m}{dt}
+\end{equation}
+
+\noindent
+逆起電力は回転速度に比例し,
+\begin{equation}
+e_b = k_m \omega_m
+\end{equation}
+
+\noindent
+トルクは電機子電流に比例する：
+\begin{equation}
+T_m = k_t i_m
+\end{equation}
+
+\noindent
+機械系のトルク平衡式は,
+\begin{equation}
+T_m + T_a = J_{eq} \frac{d\omega_m}{dt}
+\end{equation}
+
+\noindent
+以上より伝達関数は近似的に一次系となり,
+\begin{equation}
+G_m(s) \approx \frac{K}{\tau s+1}
+\end{equation}
+
+\noindent
+ここで $K$ はゲイン，$\tau$ は時定数である.
+入力が$a/s$のステップ応答を考えると, 
+
+\begin{equation}
+    y(t) = aK(1 - e^{-t/\tau})
+\end{equation}
+
+\noindent
+となる. 定常値は,
+
+\begin{equation}
+    y(\infty) = aK
+\end{equation}
+
+\noindent
+$t = \tau$での値は, 
+
+\begin{equation}
+    y(\tau) = aK(1 - e^{-1}) \approx 0.632 \times aK
+\end{equation}
+
+\noindent
+以上より, K, $\tau$の値を求めることができる.
+
+\subsection{速度制御}
+　PI コントローラを用いる．制御入力は
+\begin{equation}
+u(s) = k_p(b_{sp}r(s)-y(s)) + \frac{k_i}{s}(r(s)-y(s))
+\end{equation}
+
+\noindent
+閉ループ伝達関数は，
+\begin{equation}
+G_{yr}(s) = \frac{K(k_p b_{sp} s + k_i)}{Ts^2 + (Kk_p+1)s + Kk_i}
+\end{equation}
+
+\noindent
+また, 以下に図2-2として速度制御のブロック線図を示す.
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/speed_ctr.png}
+    \caption{図2-2: 速度制御のブロック線図}
+\end{figure}
+
+\subsection{位置制御}
+　PD コントローラを用いる．制御入力は
+\begin{equation}
+u(s) = k_p(r(s)-y(s)) + k_d s(b_{sd}r(s)-y(s))
+\end{equation}
+
+\noindent
+閉ループ伝達関数は，
+\begin{equation}
+G_{yr}(s) = \frac{K(k_d b_{sd} s + k_p)}{Ts^2 + (1+Kk_d)s + Kk_p}
+\end{equation}
+
+\noindent
+また, 以下に図2-3として位置制御のブロック線図を示す.
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/position_ctr.png}
+    \caption{図2-3: 位置制御のブロック線図}
+\end{figure}
+
+\subsection{2次系のステップ応答}
+　閉ループ系は一般に
+\begin{equation}
+G(s) = \frac{\omega_n^2}{s^2 + 2\zeta \omega_n s + \omega_n^2}
+\end{equation}
+
+\noindent
+で表される．ここで $\omega_n$ は自然角周波数，$\zeta$ は減衰係数である．
+オーバーシュート$PO$($\%$), 行過ぎ時間$t_p$(s), 定常偏差essを評価指標とする.%
+ステップ入力$r(t) = r_1 - r_0$を入れた際の$PO$は以下の式(11)で表される.%
+ただし, $y_{max}$はピーク値である.
+
+\begin{equation}
+    PO = \frac{y_{max} - r_1}{r_1 - r_0} \times 100
+\end{equation}
+
+\subsection{負荷外乱への対応}
+　PID 制御では積分作用により外乱に対する定常偏差が 0 となる．
+\begin{equation}
+e_{ss,PD} = \frac{V_{sd}}{k_p}, \quad e_{ss,PID} = 0
+\end{equation}
+
+\section{実験手順}
+\subsection{使用器具}
+\begin{itemize}
+\item DC モータ(Quanser QNET DC モータ2.0 アドオンボード)
+\item 計測器(NI ELVIS II Basic)
+\item 制御用PC
+\item ソフトウェア(NI LabVIEW, NI LabVIEW Control Design and Simulation Module)
+\end{itemize}
+
+\subsection{モデリング}
+\begin{enumerate}
+\item 「QNET DC Motor Modeling.vi」を開き, Amplitude (V) = 2.0, %
+Frequency (Hz) = 0.20, Oﬀset (V) = 3.0に設定し,モータを動作させる．
+\item ステップ応答を観測し，ゲイン $K$ と時定数 $\tau$ を計算する．
+\item モデルと実機の応答を比較し，必要に応じて調整する．
+\item 決定した $K,\tau$ を記録し，グラフを保存する．
+\end{enumerate}
+
+\subsection{速度制御実験}
+\begin{enumerate}
+\item 「QNET DC Motor Speed Control.vi」を開き, Amplitude (rad/s) = 25.0, %
+Frequency (Hz) = 0.20, Oﬀset (rad/s) = 100.0, Signal = ‘Square’に設定し, 信号生成器を設定.
+\item 比例ゲイン $k_p$ を変化させ，応答特性を観測・考察する．
+\item 積分ゲイン $k_i$ を変化させ，応答特性を観測・考察する．
+\item 設計仕様（$\zeta=0.75,\ \omega_n=16$）に基づき $k_p,k_i$ を計算．
+\item 実験で仕様を満たすか確認し，調整・考察する．
+\item 決定した $k_p,k_i$ を記録し，グラフを保存する.
+\item kp (V.s/rad) = 0.10, ki (V/rad) = 1.50, bsp = 0.00に設定する.
+\item セットポイントウェイト $b_{sp}$ を0.00 から1.00まで変化させ，影響を考察する．
+\end{enumerate}
+
+\subsection{位置制御実験}
+\begin{enumerate}
+\item 「QNET DC Motor Position Control.vi」を開き, Amplitude (rad) = 2.0%
+Frequency (Hz) = 0.20, Oﬀset (rad) = 0.00に設定し, 信号生成器を設定.%
+比例ゲインkp (V/rad) = 0.50, 積分ゲインki (V/rad.s) = 0.00, 微分ゲインkd (V.s/rad) = 0.00, %
+セットポイントウェイトbsd は0 に設定されている.
+\item 比例ゲイン $k_p$ を変化させ，応答特性を観測・考察する．
+\item kp = 1.5, kd = 0.00 に設定する. kd を 0.00 から適当な間隔で増加させ%
+微分ゲイン $k_d$ を変化させ，応答特性を観測・考察する.
+\item 設計仕様（$\zeta=0.60,\ \omega_n=25$）に基づき $k_p,k_d$ を計算．
+\item 実験で仕様を満たすか確認し，調整・考察する．
+\item 決定した $k_p,k_d$ を記録し，グラフを保存する．
+\end{enumerate}
+
+\subsection{三角波追跡実験}
+\begin{enumerate}
+\item 「QNET DC Motor Speed Control.vi」を開き, %
+Amplitude (rad/s) = 50.0, Frequency (Hz) = 0.40, Oﬀset (rad/s) = 100.0, Signal = ‘Sawtooth’に設定し, %
+信号生成器を三角波に設定.比例ゲインkp (V/rad) = 0.20, 積分ゲインki (V/rad.s) = 0.00, bsp = 1.00に設定する.%
+\item 測定値と基準値を比較し，追跡誤差の原因を考察する．
+\item 積分ゲイン $k_i$ を変化させ，追跡能力への影響を考察する．
+\end{enumerate}
+
+\subsection{負荷外乱対応実験}
+\begin{enumerate}
+\item 「QNET DC Motor Position Control.vi」を開き, %
+Amplitude (rad) = 0, Frequency (Hz) = 0.40, Oﬀset (rad) = 0, %
+比例ゲインkp (V/rad) = 2.0, 積分ゲインki (V/rad.s) = 0.0, 微分ゲインkd (V.s/rad) = 0.1,%
+に設定する.
+\item Disturbance スイッチにより外乱を印加する.
+\item 比例ゲインkp (V/rad) = 2.0, 積分ゲインki (V/rad.s) = 2.0, 微分ゲインkd (V.s/rad) = 0.1に設定する.%
+\item 積分作用の有無による外乱抑制効果を比較する．
+\end{enumerate}
+
+
+\section{実験結果と考察}
+\subsection{モデリングの結果}
+
+\subsubsection{実験3.2.2の結果}
+　モーターのゲインと時定数は, 式(7), 式(8)から計算すると, %
+$\tau = 0.14$, $K = 26.225$であった.
+
+\subsubsection{実験3.2.3の結果}
+　3.2.2で求めた$\tau, K$を用いてモーターを動作させた結果を以下に図4-1として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.2/3.2_badmodel.png}
+    \caption{図4-1: モデルと実際のモータの角速度}
+\end{figure}
+
+\noindent
+この値だと, ゲインKが大きく, $\tau$が小さくなっており, 調整を行う必要がある.
+
+\subsubsection{実験3.2.4の結果}
+　調整後のゲインKと時定数$\tau$は, $K = 26.6$, $\tau = 0.14$であった.%
+以下に保存したSpeed(rad/s)のグラフを以下に図4-2として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.2/3.2_goodmodel.png}
+    \caption{図4-2: 調整後のゲインと時定数を用いたモータの角速度}
+\end{figure}
+
+\subsection{速度制御実験}
+\subsubsection{実験3.3.2の結果}
+　$k_p$を$0.1, 0.03, 0.05, 0.07$で変化させた際の, モーターの角速度のグラフを%
+以下に図4-3から4-6として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-kp/3.3-kp0.1.png}
+    \caption{図4-3: $k_p = 0.1$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-kp/3.3-kp0.03.png}
+    \caption{図4-4: $k_p = 0.03$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-kp/3.3-kp0.05.png}
+    \caption{図4-5: $k_p = 0.05$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-kp/3.3-kp0.07.png}
+    \caption{図4-6: $k_p = 0.07$のときのモータの角速度}
+\end{figure}
+
+\noindent
+また, 実験結果から得られたオーバーシュートPO($\%$), 行過ぎ時間tp(s)の結果を以下に表4-1として示す.
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-1: $k_p$を変化させた際のオーバーシュート，行過ぎ時間}
+    \begin{adjustbox}{width=0.35\linewidth}
+        \csvautotabular{Dataset/Memo/3-3-3-kp.csv}
+    \end{adjustbox}
+\end{table}
+
+\noindent
+POとtpのkp依存性のグラフを以下に示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.2kp-PO.png}
+    \caption{図4-7: POのkp依存性}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.2kp-tp.png}
+    \caption{図4-8: tpのkp依存性}
+\end{figure}
+
+\noindent
+kpが大きくなるにつれて, POは小さく, tpは大きくなる. 従って, 速度制御においてkpは%
+オーバーシュートを小さくする役割を持っているが, kpを大きくすると応答速度が遅くなる.%
+
+\subsubsection{実験3.3.3の結果}
+　$k_i$を$0.05, 0.2, 0.5, 0.7, 1.0$で変化させた際の, モーターの角速度のグラフを%
+以下に図4-7から4-12として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-ki/3.3-ki0.05.png}
+    \caption{図4-9: $k_i = 0.05$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-ki/3.3-ki0.2.png}
+    \caption{図4-10: $k_i = 0.2$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-ki/3.3-ki0.5.png}
+    \caption{図4-11: $k_i = 0.5$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-ki/3.3-ki0.7.png}
+    \caption{図4-12: $k_i = 0.7$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3-ki/3.3-ki1.0.png}
+    \caption{図4-13: $k_i = 1.0$のときのモータの角速度}
+\end{figure}
+
+\noindent
+また, $k_i$を変化させた際のオーバーシュートPO($\%$), 行過ぎ時間tp(s)の結果を以下に表4-2として示す.
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-2: $k_i$を変化させた際のオーバーシュート，行過ぎ時間}
+    \begin{adjustbox}{width=0.35\linewidth}
+        \csvautotabular{Dataset/Memo/3-3-3-ki.csv}
+    \end{adjustbox}
+\end{table}
+
+\noindent
+POとtpの$k_i$依存性のグラフを以下に示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.3ki-PO.png}
+    \caption{図4-14: POの$k_i$依存性}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.3ki-tp.png}
+    \caption{図4-15: tpの$k_i$依存性}
+\end{figure}
+
+\noindent
+kiが大きくなるにつれて, POは大きく, tpは小さくなる. 従って速度制御においてkiは%
+応答速度を大きくしするが, kiを上げるとオーバーシュートが大きくなってしまう.
+
+
+
+\subsubsection{実験3.3.4の結果}
+　$\zeta=0.75,\ \omega_n=16$に設定すると, $PO=2.8375 (\%), t_p=0.29685 (s)$となる.%
+また, 式(7)と式(10)の係数を比較すると, $k_p, k_i$は以下の式(13), 式(14)で表される.
+
+\begin{equation}
+    k_p = \frac{2\zeta \omega_n - 1}{K}
+\end{equation}
+
+\begin{equation}
+    k_i = \frac{\omega_n^2}{K}
+\end{equation}
+
+\noindent
+式(13), 式(14)に設定した値を代入すると, %
+$k_p = 0.0887, k_i = 1.347$となる. 
+
+\subsubsection{実験3.3.5の結果}
+　3.3.4で示した$k_p, k_i$を設定すると設計仕様を満たさなかった.%
+実測値は摩擦や電源ノイズ等による影響で計算値の通りに設定しても仕様を満たさなかったと考察できる.
+$k_p = 0.08, k_i = 0.95$に調整した.
+
+\subsubsection{実験3.3.6の結果}
+　3.3.5で定めた$k_p, k_i$に設定した際の Speed (rad/s) とVoltage (V) のグラフを以下に%
+図4-14, 4-15として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.6/3.3.6_speed.png}
+    \caption{図4-16: モータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.6/3.3.6_voltage.png}
+    \caption{図4-17: 電圧}
+\end{figure}
+
+\subsubsection{実験3.3.8}
+　bspを$0, 0.1, 0.2, 0.5, 1.0$で変化させた際の, モーターの角速度のグラフを%
+以下に図4-16から4-19として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.7/3.3.7-bsp0.png}
+    \caption{図4-18: $bsp = 0$のときのモータの角速度}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.7/3.3.7-bsp0.1.png}
+    \caption{図4-19: $bsp = 0.1$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.7/3.3.7-bsp0.2.png}
+    \caption{図4-20: $bsp = 0.2$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.7/3.3.7-bsp0.5.png}
+    \caption{図4-21: $bsp = 0.5$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.7/3.3.7-bsp1.0.png}
+    \caption{図4-22: $bsp = 1.0$のときのモータの角速度}
+\end{figure}
+
+\noindent
+また, bspを変化させた際のオーバーシュートPO($\%$), 行過ぎ時間tp(s)の結果を以下に表4-2として示す.
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-3: $k_p$を変化させた際のオーバーシュート，行過ぎ時間}
+    \begin{adjustbox}{width=0.35\linewidth}
+        \csvautotabular{Dataset/Memo/3-3-7-bsp.csv}
+    \end{adjustbox}
+\end{table}
+
+\noindent
+POとtpのbsp依存性のグラフを以下に示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.7bsp-PO.png}
+    \caption{図4-23: POのbsp依存性}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.3.7bsp-tp.png}
+    \caption{図4-24: tpのbsp依存性}
+\end{figure}
+\noindent
+bspが大きくなるとPOが大きくなり, tpは小さくなる.　速度制御において%
+bspが応答速度を速めるが, オーバーシュートが大きくなる.
+
+\subsection{位置制御実験}
+\subsubsection{実験3.4.2の結果}
+　$k_p$を$0.25, 0.75, 0.5, 1.0$で変化させた際の, モーターの位置(rad)のグラフを%
+以下に図4-16から4-19として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.2-kp/3.4.2-kp0.25.png}
+    \caption{図4-25: $k_p = 0.25$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.2-kp/3.4.2-kp0.5.png}
+    \caption{図4-26: $k_p = 0.5$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.2-kp/3.4.2-kp0.75.png}
+    \caption{図4-27: $k_p = 0.75$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.2-kp/3.4.2-kp1.0.png}
+    \caption{図4-28: $k_p = 1.0$のときのモータの角速度}
+\end{figure}
+
+\noindent
+また, $k_p$を変化させた際のオーバーシュートPO($\%$), 行過ぎ時間tp(s), 定常偏差essの結果を以下に表4-2として示す.
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-4: $k_p$を変化させた際のオーバーシュート, 行過ぎ時間, 定常変化}
+    \begin{adjustbox}{width=0.35\linewidth}
+        \csvautotabular{Dataset/Memo/3-4-2-kp.csv}
+    \end{adjustbox}
+\end{table}
+
+\noindent
+PO, tp, essのkp依存性のグラフを以下に示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.2kp-PO.png}
+    \caption{図4-29: POのkp依存性}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.2kp-tp.png}
+    \caption{図4-30: tpのkp依存性}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.2kp-ess.png}
+    \caption{図4-31: essのkp依存性}
+\end{figure}
+
+\noindent
+kpを大きくすると, POが大きくなり, tpが小さくなる. 位置制御においても%
+kpは応答速度を速めるが, オーバーシュートも増加してしまう役割を持っている.
+
+\subsubsection{実験3.4.3の結果}
+　$k_i$を$0, 0.03, 0.05, 0.07, 0.10$で変化させた際の, モーターの角速度のグラフを%
+以下に図4-20から4-22として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3-kd/3.4.3-kd0.png}
+    \caption{図4-32: $k_d = 0$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3-kd/3.4.3-kd0.03.png}
+    \caption{図4-33: $k_d = 0.03$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3-kd/3.4.3-kd0.05.png}
+    \caption{図4-34: $k_d = 0.05$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3-kd/3.4.3-kd0.07.png}
+    \caption{図4-35: $k_d = 0.07$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3-kd/3.4.3-kd0.1.png}
+    \caption{図4-36: $k_d = 0.10$のときのモータの角速度}
+\end{figure}
+
+\noindent
+また, $k_d$を変化させた際のオーバーシュート, 行過ぎ時間, 定常偏差を以下に表として示す.
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-5: $k_d$を変化させた際のオーバーシュート, 行過ぎ時間, 定常偏差}
+    \begin{adjustbox}{width=0.35\linewidth}
+        \csvautotabular{Dataset/Memo/3-4-3-kd.csv}
+    \end{adjustbox}
+\end{table}
+
+\noindent
+PO, tp, essのkd依存性のグラフを以下に示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3kd-PO.png}
+    \caption{図4-37: POのkd依存性}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3kd-tp.png}
+    \caption{図4-38: tpのkd依存性}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.3kd-ess.png}
+    \caption{図4-39: essのkd依存性}
+\end{figure}
+\noindent
+kdが大きくなると, POは減少し, tpは大きくなる. 位置制御において%
+kdはオーバーシュートを小さくするが, 応答速度が遅くなってしまう役割を持つ.
+\subsubsection{実験3.4.4の結果}
+　$\zeta=0.60,\ \omega_n=25$に設定すると, $PO=9.478 (\%), t_p=0.1571 (s)$となる.%
+また, 式(7)と式(10)の係数を比較すると, $k_p, k_i$は以下の式(13), 式(14)で表される.
+
+\begin{equation}
+    k_p = \frac{\omega_n^2}{K}
+\end{equation}
+
+\begin{equation}
+    k_d = \frac{2\zeta \omega_n - 1}{K}
+\end{equation}
+
+\noindent
+式(13), 式(14)に設定した値を代入すると, %
+$k_p = 3.2895, k_i = 0.1203$となる. 
+
+\subsubsection{実験3.4.5の結果}
+3.4.4で定めたkp, kiを設定したデータでは$t_p = 0.11 (s), PO = 5.3 (\%)$となる.%
+3.4.4の結果より下回っており, 設計仕様を満たしている.
+
+\subsubsection{実験3.4.6の結果}
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.5and6/3.4.5_position.png}
+    \caption{図4-40: 位置}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.4.5and6/3.4.6_voltage.png}
+    \caption{図4-41: 電圧}
+\end{figure}
+
+\subsection{三角波追跡実験}
+\subsubsection{実験3.5.2の結果}
+　測定したモーターの角速度を以下に図4.として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.5-ki/3.5.2.png}
+    \caption{図4-42: 三角波を入力した時のモータの角速度}
+\end{figure}
+
+\noindent
+式(9)より, ki=0となると, $bsp = 1$として逆ラプラス変換を行うと, $u(t) = k_p(r(t) - y(t))$
+となる. 従って, 誤差が生じても誤差を減らす項が存在せず, 誤差を抱えたまま追従にならない.
+\subsubsection{実験3.5.3の結果}
+　$k_i$を$0.1, 0.5, 1.0$と変化させた際のモーターの角速度を以下に図4.として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.5-ki/3.5.3-ki0.1.png}
+    \caption{図4-43: $k_i = 0.1$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.5-ki/3.5.3-ki0.5.png}
+    \caption{図4-44: $k_i = 0.5$のときのモータの角速度}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.5-ki/3.5.3-ki1.0.png}
+    \caption{図4-45: $k_i = 1.0$のときのモータの角速度}
+\end{figure}
+
+\noindent
+kiを大きくしていくと追従性が良くなっているが, 波形の歪みが大きくなっている.
+
+
+\subsection{負荷外乱対応実験}
+\subsubsection{実験3.6.2の結果}
+　Disturbance スイッチにより外乱を加えた際のモーターの位置(rad)のグラフを以下に示す.
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.6/3.6.2_position.png}
+    \caption{図4-46: $k_i = 0$のときのモータの位置}
+\end{figure}
+
+\noindent
+外乱が加わると, その分だけ位置がずれていることが確認できる.
+
+\subsubsection{実験3.6.4の結果}
+　積分作用を加えた応答を以下に示す.
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/3.6/3.6.4_position.png}
+    \caption{図4-47: $k_i = 2.0$のときのモータの位置}
+\end{figure}
+
+\noindent
+kiによる項が追加されることで, 加わった外乱が0に収束している. kiが%
+外乱に対して, 生じる誤差を抑える影響を持っていることがわかる.
 
 \end{document}

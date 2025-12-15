@@ -7,7 +7,363 @@
 \usepackage{float}
 \usepackage{url}
 \usepackage[dvipdfmx, x11names]{xcolor}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{csvsimple}
 
 \begin{document}
+\section{目的}
+　レーザーの重要な性質である高い可干渉性を利用して, レーザー干渉計を用いた%
+様々な物理量の計測が行われている. 本実験では, マイケルソン干渉計及びマッハ・ツェンダー型干渉計%
+の様子それぞれから, レーザー波長と空気の屈折率を求める.
+
+\section{原理}
+\subsection{光の干渉}
+光は波であり, 波の位相関係によって強め合ったり弱め合ったりする.%
+平面波を考え, 二本の平行スリットに入射する場合, スクリーン上に明暗の縞模様が観測される.%
+この現象は光の干渉と呼ばれる. スクリーン上で明るい縞が見える条件は,%
+各スリットからの距離差が光の波長の整数(m)倍であるときであり, 以下の式(1)で表される.
+
+\begin{equation}
+    \Delta L = m \lambda
+\end{equation}
+
+\noindent
+暗い縞となる場合は, 距離差が以下の式(2)で表される.
+
+\begin{equation}
+    \Delta L = \left(m + \frac{1}{2}\right)\lambda
+\end{equation}
+
+\noindent
+光路内に屈折率$n$をもつ長さ$L$の物質が存在する場合, %
+光学的距離差$\Delta D = (n - n_0)L$が上記条件を満たすと干渉が起こる.%
+
+\vskip\baselineskip
+強め合う条件 : 
+
+\begin{equation}
+    \Delta D = (n - n_0)L = m \lambda
+\end{equation}
+
+\vskip\baselineskip
+
+弱め合う条件 : 
+\begin{equation}
+    \Delta D = (n - n_0) = (m + \frac{1}{2})\lambda
+\end{equation}
+
+\subsection{干渉計}
+干渉縞を観測することで様々な物理量を計測する装置を干渉計と呼ぶ. 代表的なものに以下がある.
+\begin{itemize}
+    \item マイケルソン干渉計・・・レーザー波長や微小距離の測定
+    \item マッハ・ツェンダー干渉計・・・流体や屈折率の測定
+\end{itemize}
+
+\subsection{マッハ・ツェンダー干渉計の原理}
+　以下の図2-1のようにレーザー・ミラー・スクリーンを設置する.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/mahha.png}
+    \caption{図2-1: マッハ・ツェンダー干渉計}
+\end{figure}
+
+\noindent
+レーザーを二つの光路に分け, 再度重ね合わせると光路差に応じて干渉縞が生じる.%
+一方の光路に透明体を入れると, その屈折率に応じて干渉縞が変化する.
+
+\subsection{マイケルソン干渉計の原理}
+　以下の図2-2のようにレーザー・ミラー・スクリーンを設置する.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/michelson.png}
+    \caption{図2-2: マイケルソン干渉計}
+\end{figure}
+
+\noindent
+ハーフミラーでレーザーを二つの光路に分け, ミラーで折り返して重ねることで干渉縞を生じさせる.%
+光路差が$\lambda/4$変化するごとに干渉縞が一つ動く.
+
+
+\section{実験手順}
+\subsection{マイケルソン干渉計}
+
+\textbf{使用器具}
+\begin{itemize}
+    \item レーザー 1台
+    \item 対物レンズ 1枚
+    \item 凸レンズ 1枚
+    \item ハーフミラー 1枚
+    \item ミラー 2枚
+    \item スクリーン 1枚
+\end{itemize}
+
+\paragraph{(1) レーザーON}\quad\\
+　コントローラーで「POWER」スイッチを押し, 緑ランプ点灯を確認後「LD」スイッチをオンにし, 赤ランプが点灯すればレーザー照射が開始する.
+
+\paragraph{(2) 凸レンズの設置}\quad\\
+　レーザー軸に対してレンズを調整し, 平行ビームを作成する. ビーム径が近距離・遠距離で変わらない位置に固定する.
+
+\paragraph{(3) 光路L1の設置}\quad\\
+　まず, ハーフミラーを置き反射されたレーザーを同じ方向を折り返すようにする. %
+透過光側にミラーを設置し, 反射光を重ねる. ミラーの角度を調整して光軸を合わせる.
+
+\paragraph{(4) 光路L2の設置}\quad\\
+　反射光側にミラーを設置し, レーザー透過側にＬ１で置いた位置と同じくらいの距離に反%
+射角度が１８０度になるよう光路差を調整する. デジタルマイクロメータ付きミラーを使用する.
+
+\paragraph{(5) 干渉パターンの観測}\quad\\
+　L1とL2の光軸を重ね, 干渉縞を確認する. 縞間隔が約1mmになるよう調整する.
+
+\subsection{マッハ・ツェンダー干渉計}
+
+\textbf{使用器具}
+\begin{itemize}
+    \item レーザー 1台
+    \item 対物レンズ 1枚
+    \item 凸レンズ 1枚
+    \item ハーフミラー 2枚
+    \item ミラー 2枚
+    \item スクリーン 1枚
+    \item 空気セル 1式
+\end{itemize}
+
+\paragraph{(1) レーザーON}\quad\\
+　マイケルソン干渉計のとき同様にレーザーを起動する.
+
+\paragraph{(2) 対物レンズの設置}\quad\\
+　適当な位置に対物レンズを設置し, 対物側と反対方向からレーザーレンズ中心を通るよう調整する.
+
+\paragraph{(3) 凸レンズの設置}\quad\\
+　マイケルソン干渉計のとき同様に, レーザー軸に対してレンズを調整し, %
+平行ビームを作成する. ビーム径が近距離・遠距離で変わらない位置に固定する.
+
+\paragraph{(4) 光路L1の設置}\quad\\
+　ハーフミラーで光路を分け, 透過光側にミラーを設置し, レーザーを直角に反射させる.
+
+\paragraph{(5) 光路L2の設置}\quad\\
+　反射光側にミラーを設置し, レーザー透過側に前置いた位置と同じくらいの距離に反射角度
+が90度になるよう調整し, 最後にハーフミラーで光路を重ねる.
+
+\paragraph{(6) 干渉パターンの観測}\quad\\
+　出口に近い方のミラーを用いて遠い位置でビームが重なるよう調整し, %
+遠い方のミラーを用いて近い位置でビームが重なるよう調整することで%
+光軸を重ね, 干渉縞を確認する. ミラー・ハーフミラーの角度を微調整.
+
+\paragraph{(7) セルの設置}\quad\\
+　2本の光路の片方に空圧セルを入れ, レーザーはセルウィンドウを通し, 空気弁を開けておく.%
+
+
+\paragraph{(8) 干渉縞シフト量の計測}\quad\\
+注射器の押し手を押し込んで圧力を変化させ、縞の移動量を記録する.
+
+\section{結果と考察}
+\subsection{考察課題 1}
+　ミラーを傾かせることで干渉縞がどう変わるかを観測し，干渉縞が出来る仕組みとなぜそ%
+うなるかを考察する.
+
+　ミラーの角度を変えることで, 干渉縞の向きや間隔を変えることができる. 
+干渉縞の向きは二つの光波の波面が交差する面に平行となる. ミラーの向きをわずかに傾けると%
+2つの光路から来る光線が傾いてスクリーンに入射するため、2つの波面は斜めに交差していき, %
+波面が交差する方向が変化することで, 干渉縞全体の向きが変化する.
+
+また, 干渉縞の間隔dは以下の式(5)で表すことができる.
+
+\begin{equation}
+    d = \frac{\lambda}{\theta}
+\end{equation}
+
+\noindent
+よって二つの光波の交差角が小さければ、干渉縞の間隔が大きくなり, 交差角が大きくなると%
+間隔は小さくなる.
+
+
+\subsection{考察課題 2}
+　実験で得れたデータから, 使用したレーザーの波長を求め, 理論値と比較する.
+
+縞の移動量をN, ハーフミラーからミラーまでの経路での変化を$\Delta d$, 波長を$\lambda$と%
+する. 縞1本分の変化に対応する光路長差は$\lambda$に相当するため, N本の時は, 以下の式(6)で表される.
+
+\begin{equation}
+    \Delta d = \frac{N\lambda}{2}
+\end{equation}
+
+\noindent
+よって, 波長を求める式は以下の式(7)となる.
+
+\begin{equation}
+    \lambda = \frac{2\Delta d}{N}
+\end{equation}
+
+\noindent
+以下にマッハ・ツェンダ-干渉計の実験で得られたデータと%
+式から求めた波長を表4-1として示す.%
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-1: ミラーの移動量と干渉縞の移動量}
+    \csvautotabular{Dataset/jikkenA4-1.csv}
+\end{table}
+
+\noindent
+また, 表3-1の平均値と分散を以下の表4-2として示す.
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-2: ミラーの移動量と縞の移動量の平均と分散}
+    \begin{tabular}{|c|c|c|}
+    \hline
+    & 平均 & 分散 \\
+    \hline
+    ミラーの移動量($\mu m$) & 6.600 & 34.30 \\
+    \hline
+    縞の移動量 & 20.06 & 325.3 \\
+    \hline
+    波長(nm) & 636.9 & 5250 \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\noindent
+実験で使用したレーザーの波長は$594.1 nm$であった. 一方, 実験値から求めた波長は約%
+$640 nm$であり, 同じく橙色の波長となったため, 実験値は妥当性があると言える.
+
+また, 上の表3-1のミラーの移動距離と縞の移動数の関係を示したグラフを以下に図3-1として%
+示す. 
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A4-2.png}
+    \caption{図4-1: ミラーの移動距離と干渉縞の移動量の関係}
+\end{figure}
+
+
+\subsection{考察課題 3}
+　以下に測定したデータを表として示す. 実験環境は大気圧P (hPa) = 1022, %
+気温T (C°) = 20, 空気セルの長さl (cm) = 7.1である.
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-3: 差圧と干渉縞の移動量}
+    \csvautotabular{Dataset/jikkenA4-2.csv}
+\end{table}
+
+\noindent
+また, 上の表の干渉縞の移動量と圧力の関係をプロットしたグラフを以下に示す.%
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A4-3.png}
+    \caption{図4-2: 大気圧と干渉縞の移動量の関係}
+\end{figure}
+
+\subsection{考察課題 4}
+　大気圧と空気の屈折率の関係を理論値と実験値で比較する.%
+理論値は大気圧と屈折率の関係式である, 以下の式(8)の, Edlén's equationを用いて求める.
+
+\begin{equation}
+    n - 1 = \frac{P(n_0 - 1)}{720.775} \times \frac{1 + P(0.817 - 0.0133T) \times 10^{-6}}{1 + 0.0036610T}
+\end{equation}
+
+\noindent
+$n_0$は標準大気の屈折率, でPの単位は $Torr$, である.
+$n_0$は以下の式(9)で表される.
+
+\begin{equation}
+    n_0 - 1 = 8.34213 \times 10^{-5} + \frac{2.40603 \times 10^{-2}}{130 - 1/(\lambda([\mu m]))^2} + \frac{1.5997 \times 10^{-4}}{38.9 - 1/(\lambda([\mu m]))^2}
+\end{equation}
+
+\noindent
+実験値から得られたデータからは以下の式(10)で屈折率を求める.
+
+\begin{equation}
+    n = n_0 + \frac{N\lambda}{d}
+\end{equation}
+
+\noindent
+求めた屈折率の理論値と実測値を以下に表4-4として示す.
+
+\begin{table}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \caption{表4-3: 屈折率の理論値と実験値}
+    \csvautotabular{Dataset/jikkenA4-3.csv}
+\end{table}
+
+\noindent
+また, 表4-4の値をプロットしたグラフを以下に図4-3として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A4-4.png}
+    \caption{図4-3: 屈折率の理論値と実験値の比較}
+\end{figure}
+
+\noindent
+相対誤差は約$0.00046\%$となっており, 実験値は妥当な結果であると言える.
+
+\subsection{考察課題 5}
+　大気圧の変化で屈折率が変化する理由と, Edlén's equation が温度変化によっても屈折率が変化する%
+理由を考察する.
+
+ローレンツ・ローレンツの式は屈折率を$n$, モル質量を$M$, 真空の誘電率を$\epsilon_0$, %
+分子分極率を$\alpha$, 密度を$\rho$, アボガドロ定数を$N_A$として以下の式(11)で%
+表される.
+
+\begin{equation}
+    \frac{n^2 - 1}{n^2 + 1} = \frac{N_A\alpha}{3\epsilon_0 M} \rho
+\end{equation}
+
+\noindent
+
+空気中の屈折率は1と近似できるため, 式(11)の左辺に$n \simeq1 $すると, 分母は$n^2 + 1 \simeq 3$, %
+分子は$n^2 - 1 = (n + 1)(n - 1) \simeq 2(n - 1)$となる. したがって, 式(11)は%
+以下の式(12)に近似できる
+
+\begin{equation}
+    n - 1 = \frac{N_A\alpha}{2\epsilon_0 M} \rho 
+\end{equation}
+
+\noindent
+よって, $n - 1 = \propto \rho$となる. 
+また, 理想気体の状態方程式を, 大気圧を$P$, 密度を$\rho$, 気体定数を$R$, %
+温度を$T$とおくと, 以下の式(13)で表される.
+
+\begin{equation}
+    PM= \rho RT
+\end{equation}
+
+\noindent
+したがって, $\rho = \frac{M}{T} \times \frac{P}{T}$となるので, 式(12)に代入すると, 
+
+\begin{equation}
+    n - 1 \propto \frac{P}{T}
+\end{equation}
+
+\noindent
+となり, 大気圧と温度の変化により, 屈折率が変化することが分かる.
+
+\noindent
+
+\section{感想}
+　干渉縞を作成する際にミラーを使用して光路を作成する作業が想定よりも困難なものであり, %
+苦戦した. 干渉計については授業で学習したことがあるが, 実際に触れてみると数式だけでは理解%
+できていないことを思い知らされた. 干渉計を組む機会に出会った際は, 今回の実験での経験を%
+活かしたい.
+
+\section{参考文献}
+
+\url{https://www.optics-words.com/wave_optics/Michelson_interferometer.html}
+
 
 \end{document}

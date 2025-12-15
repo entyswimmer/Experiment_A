@@ -81,13 +81,15 @@ a = \exp(\log a), b = b
 
 
 \section{1週目 - 実験3}
-\subsection{課題3}
+\subsection{課題3-1}
 　実験により得たデータ100個の$\Delta t$を用いて入射角$\theta$を以下の式で求めた.
 \begin{equation}
     \theta = sin^{-1}\left(\frac{2.5}{c \Delta t}\right)
 \end{equation}
 \noindent
-宇宙線の入射角度の分布をヒストグラムとして, 以下に図3-1として図示する.
+宇宙線の入射角度の分布をヒストグラムとして, 以下に図3-1として図示する. ただし, %
+無効なデータ数が５件存在し, 削除している.
+
 
 \begin{figure}[H]
     \centering
@@ -96,9 +98,122 @@ a = \exp(\log a), b = b
     \caption{図3-1: 宇宙線の入射角度の分布}
 \end{figure}
 
+\subsection{課題3-2}
+医療分野において, 体内のがん細胞などを画像化するPET検査でコインシデンス計測が使用される.%
+片方の検出器だけに当たった迷走放射線や, 宇宙線などのノイズを自動的に排除できるため, 極めてクリアな画像が得られる.
+
+
+
 
 \section{2週目 - 実験}
-\subsection{課題}
+\subsection{課題2-1}
+以下に実験で得られたスペクトルデータ(22 ~ 26)を図4-1から図4-5として示す.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_1.png}
+    \caption{図4-1: 1つ目のデータ}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_2.png}
+    \caption{図4-2: 2つ目のデータ}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_3.png}
+    \caption{図4-3: 3つ目のデータ}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_4.png}
+    \caption{図4-4: 4つ目のデータ}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_5.png}
+    \caption{図4-5: 5つ目のデータ}
+\end{figure}
+
+\noindent
+実験と実験で得られたスペクトルデータとNISTSpectraldataの理論スペクトルデータと比較して%
+ターゲットの種類(Cu, Fe, Si, C)をそれぞれ特定する.%
+図4-1から4-5のそれぞれに対し, 4つ物質の理論値のデータのそれぞれを重ねて比較したグラフを%
+以下に図4-6から図4-10として示す. ただし, Akiは計測データの最大値に合わせてスケーリング%
+したものであり, 強度そのものではない.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_6.png}
+    \caption{図4-6: 1つ目のデータと理論値の比較}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_7.png}
+    \caption{図4-7: 2つ目のデータと理論値の比較}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_8.png}
+    \caption{図4-8: 3つ目のデータと理論値の比較}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_9.png}
+    \caption{図4-9: 4つ目のデータと理論値の比較}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{labelformat=empty}
+    \includegraphics[width=10cm]{Pictures/A6-2_10.png}
+    \caption{図4-10: 1つ目のデータと理論値の比較}
+\end{figure}
+
+\noindent
+結果を以下にまとめる.
+\begin{itemize}
+    \item 図4-6より, 実験データとFeのデータが500nm以下ではピークが多数存在し,% 
+    発振波長が多いという特徴が一致している.
+    \item 図4-7より, 実験データとCのデータが各ピークにおいて発振波長が一致している.
+    \item 図4-8より, 実験データとSiのデータが500nm付近, 550 ~ 600nm付近で発振の%
+    特徴が一致している.
+    \item 図4-9より, 実験データとCuのデータが400 ~ 525nm付近での発振が一致していることが分かる.
+    \item 図4-10より, 実験データとCのデータが500nm付近, 550 ~ 600nm付近で発振の%
+    特徴が一致している.
+\end{itemize}
+
+
+
+
+\subsection{課題2-2}
+　複数の方向から計測するコインシデンス計測では, 粒子や光子が発生した位置の特定や, 角度分布の測定が%
+可能になる. また, 複数方向からの測定によりノイズ除去能力が高まる.
+
+\section{参考文献}
+
+\begin{itemize}
+    \item コインシデンス計測の応用例\\
+    \url{https://www.rinshokaku.com/contents/pdf/sec7/6.pdf}
+    \item 複数の方向から計測するコインシデンス計測の効果\\
+    \url{http://www-atom.mls.eng.osaka-u.ac.jp/jp/research/research_4-1.html}  
+\end{itemize}
 
 
 \end{document}
